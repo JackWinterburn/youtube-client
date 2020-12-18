@@ -27,6 +27,42 @@
       integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
       crossorigin="anonymous"
     ></script>
+    <script src="../static/js/connection.js"></script>
+
+    <script>
+      var socket = new WebSocket("ws://localhost:3000/ws");
+
+      let connect = (cb) => {
+        console.log("connecting");
+
+        socket.onopen = () => {
+          console.log("Successfully Connected");
+        };
+
+        socket.onmessage = (msg) => {
+          console.log(msg);
+          cb(msg);
+        };
+
+        socket.onclose = (event) => {
+          console.log("Socket Closed Connection: ", event);
+        };
+
+        socket.onerror = (error) => {
+          console.log("Socket Error: ", error);
+        };
+      };
+
+      function sendMsg(msg) {
+        console.log("sending msg: ", msg);
+        socket.send(msg);
+      }
+
+      connect((msg) => {
+        console.log(`New message: ${msg}`);
+      });
+    </script>
+
     <script>
       // 2. This code loads the IFrame Player API code asynchronously.
       var tag = document.createElement("script");
