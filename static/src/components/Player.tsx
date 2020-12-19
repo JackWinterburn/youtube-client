@@ -1,41 +1,26 @@
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
 import YouTube, { Options } from 'react-youtube';
 import "../scss/Player.scss";
+import Controls from "./Controls";
+import { connect } from "../connection"
 
-
-function handleStateChange(playerState: { data: number }) {
-  /*
-   * YT Player enums:
-   * buffering = -1
-   * play = 1
-   * pause = 2
-   * start = 3
-   * stop = 0
-   */
-
-  switch (playerState.data) {
-    case -1:
-      console.log("Player is buffering");
-      break;
-    case 0:
-      console.log("Player has stopped");
-      break;
-    case 1:
-      console.log("Player is playing");
-      break;
-    case 2:
-      console.log("Player has paused");
-      break;
-    case 3:
-      console.log("Player has started");
-      break;
-    default:
-      console.log("Player state has changed!");
-      break;
-  }
-}
 
 export default function Player() {
+  /* @todo get rid of "any" type */
+  const YTref = useRef<any>(null)
+  connect((msg) => {
+    let msgBody = JSON.parse(msg.data).body;
+
+    switch (msgBody) {
+      case "play":
+        YTref.current.internalPlayer.playVideo()
+        break;
+      case "pause":
+        YTref.current.internalPlayer.pauseVideo()
+        break;
+    };
+  });
+
   const YTOptions: Options = {
     height: '390',
     width: '640',
@@ -45,19 +30,19 @@ export default function Player() {
   };
 
   const [playerState, setPlayerState] = useState({ data: 0 });
-  useEffect(() => {
-    handleStateChange(playerState)
-  }, [playerState])
 
   return (
     <div className="YT-player-wrapper">
       <YouTube
+        ref={YTref}
         className="YT-player"
         videoId="2g811Eo7K8U"
         opts={YTOptions}
         onStateChange={(e: { target: any, data: number }): void => {
           setPlayerState(_ => ({ data: e.data }));
+          console.log(e.target)
         }} />
+      <Controls isPlaying={playerState.data === 1 ? true : false} />
     </div>
   );
 }

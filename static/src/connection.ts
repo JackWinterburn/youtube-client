@@ -1,4 +1,4 @@
-var socket = new WebSocket("ws://localhost:3000/ws");
+var socket = new WebSocket("ws://localhost:8080/ws");
 
 let connect = (cb: (msg: MessageEvent<any>) => void) => {
   console.log("connecting");
@@ -8,7 +8,6 @@ let connect = (cb: (msg: MessageEvent<any>) => void) => {
   };
 
   socket.onmessage = msg => {
-    console.log(msg);
     cb(msg);
   };
 

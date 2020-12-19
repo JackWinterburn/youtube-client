@@ -3,12 +3,9 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"text/template"
 
 	"github.com/JackWinterburn/youtube-client/websocket"
 )
-
-var templates = template.Must(template.ParseFiles("static/react/dist/index.html"))
 
 /*
  * TODO (Jack)
@@ -22,12 +19,6 @@ var templates = template.Must(template.ParseFiles("static/react/dist/index.html"
  * url and have that be synced across all clients
  * (mess with web sockets)
  */
-
-// Video used for javascript to be able to get the video requested
-type Video struct {
-	Title   string
-	VideoID string
-}
 
 func serveWs(pool *websocket.Pool, w http.ResponseWriter, r *http.Request) {
 	fmt.Println("WebSocket Endpoint Hit")
@@ -54,17 +45,8 @@ func setupRoutes() {
 	})
 }
 
-func homeHandler(w http.ResponseWriter, r *http.Request) {
-	vid := Video{"random", "Kx_1NYYJS7Q"}
-	err := templates.ExecuteTemplate(w, "index.html", vid)
-	if err != nil {
-		panic(err)
-	}
-}
-
 func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	setupRoutes()
-	http.HandleFunc("/", homeHandler)
-	http.ListenAndServe(":3000", nil)
+	http.ListenAndServe(":8080", nil)
 }
