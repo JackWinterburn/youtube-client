@@ -1,9 +1,10 @@
 import './App.css';
+import Player from "./components/Player";
 
 function App() {
   return (
     <div className="App">
-     <h1>React is setup with typescript!</h1>
+      <Player />
     </div>
   );
 }
