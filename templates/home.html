@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="../static/css/home.css" />
   </head>
   <body>
+    <div id="app"></div>
     <!-- 1. The <iframe> (and video player) will replace this <div> tag. -->
     <div id="player"></div>
     <div id="videoIDDiv" style="display: none">{{.VideoID}}</div>
@@ -40,7 +41,6 @@
         };
 
         socket.onmessage = (msg) => {
-          console.log(msg);
           cb(msg);
         };
 
@@ -59,10 +59,11 @@
       }
 
       connect((msg) => {
-        console.log(`New message: ${msg}`);
+        console.log(`New message: ${msg.data}`);
       });
     </script>
 
+    <!-- ------------------------------------------------------------------------ -->
     <script>
       // 2. This code loads the IFrame Player API code asynchronously.
       var tag = document.createElement("script");
