@@ -6,7 +6,8 @@ import { connect } from "../connection"
 
 
 export default function Player() {
-  /* @todo get rid of "any" type */
+
+  //TODO (Jack): get rid of that disgusting "any" type
   const YTref = useRef<any>(null)
   connect((msg) => {
     let msgBody = JSON.parse(msg.data).body;
