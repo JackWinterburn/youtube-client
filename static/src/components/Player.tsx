@@ -1,17 +1,18 @@
-import { useState, useRef } from "react";
+import { useState, useRef, createContext } from "react";
 import YouTube, { Options } from 'react-youtube';
-import "../scss/Player.scss";
 import Controls from "./Controls";
 import { connect } from "../connection"
+import "../scss/Player.scss";
 
+export const PlayerContext = createContext({ data: 0, time: 0, duration: 0 })
 
 export default function Player() {
 
   //TODO (Jack): get rid of that disgusting "any" type
   const YTref = useRef<any>(null)
   connect((msg) => {
+    console.log(YTref.current.internalPlayer)
     let msgBody = JSON.parse(msg.data).body;
-
     switch (msgBody) {
       case "play":
         YTref.current.internalPlayer.playVideo()
@@ -30,7 +31,12 @@ export default function Player() {
     },
   };
 
-  const [playerState, setPlayerState] = useState({ data: 0 });
+
+  const [playerState, setPlayerState] = useState({
+    data: 0,
+    time: 0,
+    duration: 0
+  });
 
   return (
     <div className="YT-player-wrapper">
@@ -40,10 +46,14 @@ export default function Player() {
         videoId="2g811Eo7K8U"
         opts={YTOptions}
         onStateChange={(e: { target: any, data: number }): void => {
-          setPlayerState(_ => ({ data: e.data }));
-          console.log(e.target)
+          let newTime = e.target.getCurrentTime
+          let newDuration = e.target.getDuration
+          setPlayerState(_ => ({ data: e.data, time: newTime, duration: newDuration }));
         }} />
-      <Controls isPlaying={playerState.data === 1 ? true : false} />
+
+      <PlayerContext.Provider value={playerState}>
+        <Controls />
+      </PlayerContext.Provider>
     </div>
   );
 }
