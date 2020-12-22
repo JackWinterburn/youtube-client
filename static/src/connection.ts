@@ -7,22 +7,21 @@ let connect = (cb: (msg: MessageEvent<any>) => void) => {
     console.log("Successfully Connected");
   };
 
-  socket.onmessage = msg => {
+  socket.onmessage = (msg) => {
     cb(msg);
   };
 
-  socket.onclose = event => {
+  socket.onclose = (event) => {
     console.log("Socket Closed Connection: ", event);
   };
 
-  socket.onerror = error => {
+  socket.onerror = (error) => {
     console.log("Socket Error: ", error);
   };
 };
 
 function sendMsg(msg: string) {
-  console.log("sending msg: ", msg);
   socket.send(msg);
-};
+}
 
 export { connect, sendMsg };
